@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>unichain-system-datasource</artifactId>
+        <groupId>tech.unichain.framework</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>unichain-system-datasource-starter</artifactId>
+
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>tech.unichain.framework</groupId>
+            <artifactId>unichain-system-datasource-service-simple</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+      
+        <dependency>
+            <groupId>tech.unichain.framework</groupId>
+            <artifactId>hsweb-system-datasource-dao-mybatis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+      
+        <dependency>
+            <groupId>tech.unichain.framework</groupId>
+            <artifactId>unichain-system-datasource-controller</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+      
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.0.26</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>tech.unichain.framework</groupId>
+            <artifactId>unichain-spring-boot-starter</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>tech.unichain.framework</groupId>
+            <artifactId>unichain-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>test</scope>
+        </dependency>
+      
+    </dependencies>
+</project>

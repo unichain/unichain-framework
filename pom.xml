@@ -4,24 +4,34 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.2.RELEASE</version>
+        <relativePath/>
+    </parent>
+
     <groupId>tech.unichain.framework</groupId>
     <artifactId>unichain-framework</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+
     <modules>
-        <module>unichain-starter</module>
-        <module>unichain-core</module>
         <module>unichain-authorization</module>
-        <module>unichain-message</module>
-        <module>unichain-system</module>
-        <module>unichain-tests</module>
-        <module>unichain-datasource</module>
+        <module>unichain-boost</module>
         <module>unichain-commons</module>
+        <module>unichain-concurrent</module>
+        <module>unichain-container</module>
+        <module>unichain-core</module>
+        <module>unichain-datasource</module>
         <module>unichain-i18n</module>
         <module>unichain-logging</module>
-        <module>unichain-concurrent</module>
-        <module>unichain-examples</module>
-        <module>unichain-boost</module>
+        <module>unichain-message</module>
+        <module>unichain-starter</module>
+        <module>unichain-system</module>
+        <module>unichain-tests</module>
         <module>unichain-thirdparty</module>
+        <module>unichain-utils</module>
+        <module>unichain-orm</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -48,30 +58,41 @@
 
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.locales>zh_CN</project.build.locales>
-
         <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.locales>zh_CN</project.build.locales>
         <project.build.jdk>${java.version}</project.build.jdk>
+        <javadoc.version>8</javadoc.version>
 
 
-        <spring.boot.version>1.4.5.RELEASE</spring.boot.version>
-
-        <javassist.version>3.20.0-GA</javassist.version>
+        <aspectj.version>1.6.12</aspectj.version>
+        <cglib.version>3.2.2</cglib.version>
+        <javassist.version>3.22.0-GA</javassist.version>
         <activiti.version>5.19.0.2</activiti.version>
-
         <fastjson.version>1.2.32</fastjson.version>
+
+
         <h2.version>1.4.191</h2.version>
         <mysql.version>5.1.39</mysql.version>
-        <cglib.version>3.2.2</cglib.version>
-        <aspectj.version>1.6.12</aspectj.version>
+
+
         <hibernate.validator.version>5.1.1.Final</hibernate.validator.version>
-
-        <hsweb.ezorm.version>3.0.1-SNAPSHOT</hsweb.ezorm.version>
-        <hsweb.utils.version>3.0.2</hsweb.utils.version>
-        <hsweb.expands.version>3.0.2-SNAPSHOT</hsweb.expands.version>
-
+        <spring.boot.version>1.4.5.RELEASE</spring.boot.version>
         <swagger.version>2.7.0</swagger.version>
+
+
+        <compiler-plugin.version>3.6.2</compiler-plugin.version>
+        <war-plugin.version>3.1.0</war-plugin.version>
+        <clean-plugin.version>3.0.0</clean-plugin.version>
+        <resources-plugin.version>3.0.2</resources-plugin.version>
+        <surefire-plugin.version>2.20</surefire-plugin.version>
+        <jar-plugin.version>3.0.2</jar-plugin.version>
+        <source-plugin.version>3.0.1</source-plugin.version>
+        <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
+        <gpg-plugin.version>1.6</gpg-plugin.version>
+
+
     </properties>
 
     <profiles>
@@ -82,7 +103,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
+                        <version>1.6.7</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>sonatype-releases</serverId>
@@ -100,32 +121,53 @@
                             <goals>deploy</goals>
                         </configuration>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${source-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
+                                <id>attach-sources</id>
                                 <goals>
-                                    <goal>sign</goal>
+                                    <goal>jar-no-fork</goal>
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <attach>true</attach>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
+                        <version>${javadoc-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>attach-javadocs</id>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <links>
+                                <link>
+                                    http://docs.oracle.com/javase/${javadoc.version}/docs/api
+                                </link>
+                            </links>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -146,8 +188,9 @@
             </distributionManagement>
         </profile>
     </profiles>
-    <build>
 
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -249,6 +292,86 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- unichain-framework -->
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-authorization</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-boost</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-concurrent</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-datasource</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-i18n</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-logging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-message</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-system</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-tests</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-thirdparty</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.unichain.framework</groupId>
+                <artifactId>unichain-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+
+            <!-- 3th -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -320,7 +443,19 @@
     </repositories>
 
     <distributionManagement>
-
+        <repository>
+            <id>oss</id>
+            <url>
+                https://oss.sonatype.org/service/local/staging/deploy/maven2
+            </url>
+        </repository>
+        <snapshotRepository>
+            <id>oss</id>
+            <uniqueVersion>false</uniqueVersion>
+            <url>
+                https://oss.sonatype.org/content/repositories/snapshots
+            </url>
+        </snapshotRepository>
     </distributionManagement>
 
     <pluginRepositories>
